@@ -1,4 +1,4 @@
-@model dynamic
+@model string
 
 @{
     ViewBag.Title = "Заждание 1";
@@ -8,3 +8,37 @@
 <div class="text-center">
     <h1 class="display-1">Задание 2</h1>
 </div>
+
+<div class="text-body">
+    <p>
+        Пользователь вводит предложение. Определить число пробелов
+        в нем.
+    </p>
+</div>
+
+<form id="sentenceForm" method="post" asp-controller="Sentence" asp-action="CountSpaces">
+    <label for="sentence">Введите предложение:</label>
+    <input type="text" id="sentence" name="sentence" required>
+    <button type="submit" id="countSpaces">Submit</button>
+</form>
+
+<div id="result"></div>
+
+@section Scripts {
+    <script>
+        document.getElementById("sentenceForm").addEventListener("submit", function (event) {
+            event.preventDefault();
+            var formData = new FormData(this);
+
+            fetch("/Sentence/CountSpaces", {
+                method: "POST",
+                body: formData
+            })
+            .then(response => response.text())
+            .then(result => {
+                document.getElementById("result").innerHTML = "Количество пробелов: " + result;
+            })
+            .catch(error => console.error('Error:', error));
+        });
+    </script>
+}
