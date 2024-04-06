@@ -1,0 +1,69 @@
+@model List<Rectangle>
+
+@{
+    ViewBag.Title = "Задание 1";
+}
+
+<div class="text-center">
+    <h1>Задание 1</h1>
+</div>
+<div class="text-body">
+    <p>
+        Пользователь вводит набор из N прямоугольников, заданных
+        своими сторонами - парами чисел (a, b). Найти минимальную
+        площадь прямоугольника из данного набора.
+    </p>
+</div>
+
+
+<div>
+    <form id="rectangleForm" method="post" asp-action="CalculateMinArea" asp-controller="Rectangle">
+        <div id="rectangleInputs">
+            @for (var i = 0; i < ViewBag.Count; i++)
+            {
+                <div>
+                    <p>Прямоугольник @i</p>
+                    <label for="rectangles[@i].Width">Width:</label>
+                    <input type="number" name="rectangles[@i].Width" step="any" required>
+                    <label for="rectangles[@i].Height">Height:</label>
+                    <input type="number" name="rectangles[@i].Height" step="any" required>
+                </div>
+            }
+        </div>
+        <button type="button" id="addRectangle">Добавить прямоугольник</button>
+        <button type="submit">Рассчитать минимальную площадь</button>
+    </form>
+</div>
+
+<div id="result"></div>
+
+@section Scripts {
+    <script>
+        document.getElementById("addRectangle").addEventListener("click", function () {
+            let container = document.getElementById("rectangleInputs");
+            let count = container.getElementsByTagName("div").length;
+
+            var newDiv = document.createElement("div");
+            newDiv.innerHTML = '<p>Прямоугольник '+count+'</p>\n<label for="rectangles[' + count + '].Width">Width:</label>\n' +
+                               '<input type="number" name="rectangles[' + count + '].Width" step="any" required>\n' +
+                               '<label for="rectangles[' + count + '].Height">Height:</label>\n' +
+                               '<input type="number" name="rectangles[' + count + '].Height" step="any" required>';
+            container.appendChild(newDiv);
+        });
+        
+        document.getElementById("rectangleForm").addEventListener("submit", function (event) {
+                    event.preventDefault();
+                    var formData = new FormData(this);
+        
+                    fetch("/Rectangle/CalculateMinArea/", {
+                        method: "POST",
+                        body: formData
+                    })
+                    .then(response => response.text())
+                    .then(result => {
+                        document.getElementById("result").innerHTML = "Милимальная площадь: " + result;
+                    })
+                    .catch(error => console.error('Error:', error));
+                });
+    </script>
+}
