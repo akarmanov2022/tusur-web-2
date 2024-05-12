@@ -11,7 +11,7 @@ public class SentenceController : Controller
         {
             return BadRequest();
         }
-
+    
         var spaceCount = sentence.Split(' ').Length - 1;
 
         return Ok(spaceCount.ToString());
